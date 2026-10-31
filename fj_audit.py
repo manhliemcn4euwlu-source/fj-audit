@@ -240,6 +240,10 @@ def cmd_funders(args):
 
 
 def main():
+    return run_cli()
+
+
+def build_parser():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
     d = sub.add_parser('day')
@@ -256,7 +260,11 @@ def main():
     f.add_argument('--rpc', default=None)
     for p in (d, r, f):
         p.add_argument('--proxy', default=None)
-    a = ap.parse_args()
+    return ap
+
+
+def run_cli(argv=None):
+    a = build_parser().parse_args(argv)
     global PROXY
     PROXY = a.proxy
     if a.cmd == 'day':
