@@ -5,9 +5,10 @@
 ## What it does
 
 Given one COT day, it lists every FLAPJAX transfer out of the FlapJax treasury
-`0x7C34E9e21eE28A49Ff0b84B61774119E6633359f`, reads each receipt on a second
-independent BSC provider, and groups the recipients by the wallet that first sent
-them BNB. Every number it prints can be re-checked against a public BSC node.
+`0x7C34E9e21eE28A49Ff0b84B61774119E6633359f`, re-reads each receipt on a second
+BSC provider, and groups the recipients by the wallet that first sent them BNB. It
+prints no total unless the log scan and the receipt re-read agree on the tx set and
+the sum. Every number it prints can be re-checked against a public BSC node.
 
 ## Why it exists
 
