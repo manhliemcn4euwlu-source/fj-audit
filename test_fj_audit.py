@@ -145,5 +145,12 @@ class TopicTest(unittest.TestCase):
         self.assertEqual(A.topic_pad(RECIP_A.upper().replace('0X', '0x')), A.topic_pad(RECIP_A))
 
 
+    def test_day_date_defaults_to_yesterday(self):
+        """2026-10-31 官方复核: 不带 --date 必须能跑, 不能只回 argparse usage."""
+        ap = A.build_parser()
+        args = ap.parse_args(['day'])
+        self.assertIsNone(args.date)
+
+
 if __name__ == '__main__':
     unittest.main()
