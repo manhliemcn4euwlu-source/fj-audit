@@ -1,18 +1,21 @@
 # fj-audit
 
-Read every FLAPJAX transfer out of the FlapJax treasury for one COT day, from two
-independent BSC RPCs, and group the recipients by the wallet that first sent them BNB.
-
-Every number this tool prints can be re-checked by a stranger against a public BSC node.
-It prints nothing when the two providers disagree, because a silent empty answer is the
-failure mode that makes a treasury audit wrong without looking wrong.
+Read every FLAPJAX transfer out of the FlapJax treasury for one COT day and group the
+recipients by the wallet that first sent them BNB. Every number can be re-checked by a
+stranger against a public BSC node.
 
 ## Why two sources
 
-A single public BSC endpoint answers an empty log array for a block range it does not
-index, and `null` for a receipt it cannot find. Both look like "no such transfer" and both
-are wrong. The tool scans the same window on two providers, compares the transfer sets,
-and only then reads receipts.
+A public BSC endpoint answers an empty log array for a block range it does not index, and
+`null` for a receipt it cannot find. Both look like "no such transfer" and both are wrong,
+and that is what makes a treasury audit wrong without looking wrong.
+
+The tool scans the transfer set on one provider and re-reads every receipt on a second one.
+It refuses to print a total unless the two agree on the tx set and on the sum. Two
+independent `eth_getLogs` providers is not achievable on free BSC endpoints: defibit and
+bnbchain cap the block range, and publicnode and 48.club answer an empty array for a range
+that does contain transfers. A receipt re-read on a second provider still catches a wrong
+transfer set, because the receipt carries the value and the recipient.
 
 ## Install
 
