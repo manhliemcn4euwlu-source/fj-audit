@@ -32,6 +32,8 @@ python3 -m unittest test_fj_audit -v
 ```bash
 # One COT day (UTC-5, no DST): D runs from D-1 05:00Z to D 05:00Z
 python3 fj_audit.py day --date 2026-10-30 --out report.json
+# With no --date it audits yesterday COT, which is the day the board asks about most often
+python3 fj_audit.py day --out report.json
 
 # An explicit block window, when the day boundaries are already known
 python3 fj_audit.py range --from-block 130605333 --to-block 130797288 --out report.json
