@@ -179,11 +179,16 @@ def group(rows, fund):
 
 
 def cmd_day(args):
-    d = datetime.fromisoformat(args.date).replace(tzinfo=timezone.utc)
+    # 2026-10-31 官方复核时撞到: `day` 曾把 --date 设成必填, 但不带参数调用只会得到 argparse
+    # usage 退出, 看起来像工具坏了. 现在默认取「昨天 COT」, 显式 --date 仍然覆盖.
+    date_s = args.date
+    if not date_s:
+        date_s = (datetime.now(timezone.utc).date() - timedelta(days=1)).isoformat()
+    d = datetime.fromisoformat(date_s).replace(tzinfo=timezone.utc)
     start_ts = int((d - timedelta(days=1) + timedelta(hours=5)).timestamp())
     end_ts = int((d + timedelta(hours=5)).timestamp()) - 1
     start, end = block_at(start_ts), block_at(end_ts)
-    print('COT day %s = %s 05:00Z .. %s 04:59:59Z' % (args.date, args.date, (d + timedelta(days=1)).date()))
+    print('COT day %s = %s 05:00Z .. %s 04:59:59Z' % (date_s, date_s, (d + timedelta(days=1)).date()))
     print('blocks %d .. %d' % (start, end), flush=True)
     return run(args, start, end)
 
@@ -238,7 +243,8 @@ def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest='cmd', required=True)
     d = sub.add_parser('day')
-    d.add_argument('--date', required=True)
+    d.add_argument('--date', default=None,
+                    help='COT date YYYY-MM-DD; defaults to yesterday COT')
     d.add_argument('--out')
     r = sub.add_parser('range')
     r.add_argument('--from-block', type=int, required=True)
